@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &875522070
 Transform:
   m_ObjectHideFlags: 0
@@ -83,6 +83,66 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 875522069}
   m_Enabled: 1
+--- !u!1 &1225481374
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1225481375}
+  - component: {fileID: 1225481377}
+  - component: {fileID: 1225481376}
+  m_Layer: 0
+  m_Name: SelectPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1225481375
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225481374}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.005, y: 0.037999988, z: 1.67}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2606050669817816007}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1225481377
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225481374}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.3, y: 0.3, z: 0.3}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1225481376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225481374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d1fbe5c3926a9c4e9eb1b15ce242101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CM: {fileID: 9135471951436923173}
+  RideOn: 0
+  RideTransform: {fileID: 0}
 --- !u!1 &258944119840194808
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,10 +168,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 258944119840194808}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.005, y: 1.691, z: -0.019}
+  m_LocalPosition: {x: 0.005, y: 1.691, z: 0.043}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9135471952258796455}
+  - {fileID: 1225481375}
   m_Father: {fileID: 9139980117526964136}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1885,6 +1946,7 @@ GameObject:
   - component: {fileID: 9135471951436923174}
   - component: {fileID: 9135471951436923178}
   - component: {fileID: 9135471951436923173}
+  - component: {fileID: 1224185699720088}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -1943,7 +2005,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &9135471951436923178
 CapsuleCollider:
@@ -1971,6 +2033,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b69825286e920a941afaac872afa70a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RideBtnDwn: 0
+  _SelectBox: {fileID: 1225481376}
+--- !u!114 &1224185699720088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9134406382538358084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 971cb7502861ebf4f8aa4b9636a05fc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  First: {fileID: 9135471952258796450}
+  Third: {fileID: 875522069}
 --- !u!1 &9134413266299666004
 GameObject:
   m_ObjectHideFlags: 0
@@ -2307,7 +2385,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9135471952258796450}
   m_LocalRotation: {x: -0.050075017, y: 0.0000009172082, z: 0.00000064222485, w: 0.9987455}
-  m_LocalPosition: {x: -0.005, y: 0.01699996, z: 0.253}
+  m_LocalPosition: {x: -0.005, y: 0.01699996, z: 0.124}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2606050669817816007}
