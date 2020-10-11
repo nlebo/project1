@@ -33,11 +33,15 @@ public class CharacterManager : MonoBehaviour
 
     public void Move()
     {
+        float MouseX = Input.GetAxis("Mouse X");
+
+        if(!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
         if(MoveState == Vector3.zero)
         {
             return;
         }
         
+
         transform.Translate(MoveState * Time.deltaTime * 5);
         
     }
