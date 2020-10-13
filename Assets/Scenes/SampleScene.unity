@@ -454,5 +454,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9193169612223039440, guid: 459813b32c56dad43bb179684b3813e0,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: a8555c0cff30527479e32562cef9141f, type: 2}
+    - target: {fileID: 9135471951436923174, guid: 459813b32c56dad43bb179684b3813e0,
+        type: 3}
+      propertyPath: m_UseGravity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 161629811353572088, guid: 459813b32c56dad43bb179684b3813e0,
+        type: 3}
+      propertyPath: MouseSensitve
+      value: 150
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 459813b32c56dad43bb179684b3813e0, type: 3}

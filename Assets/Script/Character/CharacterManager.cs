@@ -8,6 +8,18 @@ public class CharacterManager : MonoBehaviour
     bool RideBtn;
     [SerializeField]
     bool RideBtnDwn;
+
+    bool isSprint;
+    bool SprintBtn;
+    public float SprintSpeed = 2f;
+
+    [SerializeField]
+    bool isJump;
+    bool JumpBtn;
+    public float JumpForce = 1000;
+
+    
+    public float MoveSpeed = 5f;
     float RideBtnPressTime;
     Animator Anim;
     Rigidbody CRigid;
@@ -49,33 +61,81 @@ public class CharacterManager : MonoBehaviour
 
         RideBtn = Input.GetKey(KeyCode.F);
         RideBtnDwn = Input.GetKeyDown(KeyCode.F);
+
+        SprintBtn = Input.GetKey(KeyCode.LeftShift);
+
+        JumpBtn = !isJump && Input.GetKey(KeyCode.Space);
     }
 
     void Move()
     {
         float MouseX = Input.GetAxis("Mouse X");
+        float RMoveSpeed = MoveSpeed;
 
-        if(!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
-        if(MoveState == Vector3.zero)
+        isSprint = false;
+
+
+        if (!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
+        
+        if (!isJump && JumpBtn)
+        {
+            isJump = true;
+            CRigid.AddForce(Vector3.up * JumpForce);
+        }
+        else if (isJump)
+        {
+        }
+
+        if (MoveState == Vector3.zero)
         {
             return;
         }
-        
 
-        transform.Translate(MoveState * Time.deltaTime * 5);
+        if (MoveState.z > 0 && SprintBtn)
+        {
+            isSprint = true;
+            RMoveSpeed += SprintSpeed;
+        }
+
+        
+        
+        if(!isJump)
+        {
+            transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
+        }
         
     }
 
     public void AnimationSet()
     {
-        if(MoveState == Vector3.zero){
-             Anim.SetInteger("State",0);
-             Anim.SetLayerWeight(1,0);
+        Anim.SetLayerWeight(2, 0);
+        Anim.SetLayerWeight(2, 0);
+        Anim.SetLayerWeight(3,0);
+
+        if (isJump)
+        {
+            Anim.SetInteger("State", 3);
+            Anim.SetLayerWeight(3,1);
         }
-        else if(MoveState != Vector3.zero){ 
-            Anim.SetInteger("State",1);
-            Anim.SetFloat("WalkBlend",-MoveState.z + 0.5f);
-            Anim.SetLayerWeight(1,1);
+
+        else
+        {
+            if (MoveState == Vector3.zero)
+            {
+                Anim.SetInteger("State", 0);
+            }
+            else if (MoveState != Vector3.zero)
+            {
+                Anim.SetInteger("State", 1);
+                Anim.SetFloat("WalkBlend", -MoveState.z + 0.5f);
+                Anim.SetLayerWeight(1, 1);
+
+                if (isSprint)
+                {
+                    Anim.SetInteger("State", 2);
+                    Anim.SetLayerWeight(2, 1);
+                }
+            }
         }
     }
 
@@ -116,4 +176,11 @@ public class CharacterManager : MonoBehaviour
             isRide = true;
         }
     }
+
+    public void EndJump()
+    {
+        isJump = false;
+    }
+
+
 }

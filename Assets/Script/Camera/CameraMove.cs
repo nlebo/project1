@@ -5,7 +5,8 @@ using UnityEngine;
 public class CameraMove : MonoBehaviour
 {
 
-    public float MouseSensitve = 100f;
+    [Range(1,300)]
+    public float MouseSensitve = 150f;
     float xRotation,YRotation;
     // Start is called before the first frame update
     void Start()
