@@ -16,7 +16,7 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]
     bool isJump;
     bool JumpBtn;
-    public float JumpForce = 1000;
+    public float JumpForce = 5;
 
     
     public float MoveSpeed = 5f;
@@ -80,10 +80,11 @@ public class CharacterManager : MonoBehaviour
         if (!isJump && JumpBtn)
         {
             isJump = true;
-            CRigid.AddForce(Vector3.up * JumpForce);
+            CRigid.AddForce(Vector3.up * JumpForce,ForceMode.Impulse);
         }
         else if (isJump)
         {
+            Jump();
         }
 
         if (MoveState == Vector3.zero)
@@ -104,6 +105,37 @@ public class CharacterManager : MonoBehaviour
             transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
         }
         
+    }
+
+    public void Jump()
+    {
+        RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,10);
+        Debug.DrawRay(transform.position,-transform.up,Color.green,0.2f);
+
+        for(int i=0; i< hit.Length; i++)
+        {
+            if (hit[i].transform.gameObject.layer == 9)
+            {
+                float Dis = Vector3.Distance(transform.position, hit[i].point);
+                Debug.Log(Dis);
+                if (Anim.GetInteger("JumpState") == 0)
+                {
+                    if (Dis < 1)
+                    {
+                        Anim.SetInteger("JumpState", 1);
+                    }
+                }
+                else
+                {
+                    if (Dis >= 1)
+                    {
+                        Anim.SetInteger("JumpState", 0);
+                    }
+                }
+
+                if(Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 1f) isJump = false;
+            }
+        }
     }
 
     public void AnimationSet()
@@ -179,6 +211,12 @@ public class CharacterManager : MonoBehaviour
 
     public void EndJump()
     {
+        StartCoroutine(EndJumpCor());
+    }
+
+    IEnumerator EndJumpCor()
+    {
+        yield return new WaitForSeconds(0.5f);
         isJump = false;
     }
 
