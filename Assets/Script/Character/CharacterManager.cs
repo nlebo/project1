@@ -17,6 +17,8 @@ public class CharacterManager : MonoBehaviour
     bool isJump;
     bool JumpBtn;
     public float JumpForce = 5;
+    Vector3 MoveStateWhenJump;
+    float MoveSpeedWhenJump = 2f;
 
     
     public float MoveSpeed = 5f;
@@ -73,7 +75,7 @@ public class CharacterManager : MonoBehaviour
         float RMoveSpeed = MoveSpeed;
 
         isSprint = false;
-
+        Anim.SetBool("Move",false);
 
         if (!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
         
@@ -81,15 +83,21 @@ public class CharacterManager : MonoBehaviour
         {
             isJump = true;
             CRigid.AddForce(Vector3.up * JumpForce,ForceMode.Impulse);
+            MoveStateWhenJump = MoveState;
         }
         else if (isJump)
         {
+            
             Jump();
         }
 
         if (MoveState == Vector3.zero)
         {
             return;
+        }
+        else
+        {
+            Anim.SetBool("Move",true);
         }
 
         if (MoveState.z > 0 && SprintBtn)
@@ -104,7 +112,10 @@ public class CharacterManager : MonoBehaviour
         {
             transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
         }
-        
+        else
+        {
+            transform.Translate(MoveStateWhenJump * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump));
+        }
     }
 
     public void Jump()
@@ -133,7 +144,7 @@ public class CharacterManager : MonoBehaviour
                     }
                 }
 
-                if(Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 1f) isJump = false;
+                if(Anim.GetCurrentAnimatorStateInfo(3).IsName("BasicMotions@JumpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.8f) isJump = false;
             }
         }
     }
