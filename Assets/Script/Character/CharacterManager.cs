@@ -25,6 +25,9 @@ public class CharacterManager : MonoBehaviour
     bool BoxOn;
     Box OpenBox;
 
+    bool InvenOn;
+    bool InvenBtnDown;
+
     public float MoveSpeed = 5f;
     
     Animator Anim;
@@ -56,6 +59,7 @@ public class CharacterManager : MonoBehaviour
             Move();
         ActionBTN();
         AnimationSet();
+        Inven();
         MoveState = Vector3.zero;
     }
 
@@ -74,6 +78,8 @@ public class CharacterManager : MonoBehaviour
         SprintBtn = Input.GetKey(KeyCode.LeftShift);
 
         JumpBtn = !isJump && Input.GetKey(KeyCode.Space);
+
+        InvenBtnDown = Input.GetKeyDown(KeyCode.I);
     }
 
     void Move()
@@ -151,7 +157,7 @@ public class CharacterManager : MonoBehaviour
                     }
                 }
 
-                if(Anim.GetCurrentAnimatorStateInfo(3).IsName("BasicMotions@JumpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.8f) isJump = false;
+                if(Anim.GetCurrentAnimatorStateInfo(3).IsName("BasicMotions@JumpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.9f) isJump = false;
             }
         }
     }
@@ -264,4 +270,12 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    void Inven()
+    {
+        if(InvenBtnDown)
+        {
+            UIS.UserInven.gameObject.SetActive(!InvenOn);
+            InvenOn = !InvenOn;
+        }
+    }
 }

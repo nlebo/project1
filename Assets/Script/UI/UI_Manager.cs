@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class UI_Manager : MonoBehaviour
 {
     public static UI_Manager m_UI_Manager;
+
+    public Image UserInven;
+    public Image HpBar;
     public Image Box_2X2;
     // Start is called before the first frame update
     void Start()
