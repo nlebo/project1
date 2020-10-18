@@ -7,7 +7,9 @@ public class SelectBox : MonoBehaviour
     [SerializeField]
     CharacterManager CM;
     public bool RideOn;
+    public bool BoxOn;
     public Transform RideTransform;
+    public Box _Box;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +29,12 @@ public class SelectBox : MonoBehaviour
             RideTransform = other.transform;
             RideTransform.GetComponent<MeshRenderer>().material.color = Color.red;
         }
+        else if(other.tag == "CreateBox")
+        {
+            BoxOn = true;
+            _Box = other.GetComponent<Box>();
+            _Box.GetComponent<MeshRenderer>().material.color = Color.red;
+        }
     }
 
     private void OnTriggerExit(Collider other) {
@@ -35,6 +43,12 @@ public class SelectBox : MonoBehaviour
             RideOn = false;
             RideTransform.GetComponent<MeshRenderer>().material.color = Color.white;
             RideTransform = null;
+        }
+        else if(other.tag == "CreateBox" && _Box.transform == other.transform)
+        {
+            BoxOn = false;
+            _Box.GetComponent<MeshRenderer>().material.color = Color.white;
+            _Box = null;
         }
     }
 }

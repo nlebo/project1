@@ -5,9 +5,10 @@ using UnityEngine;
 public class CharacterManager : MonoBehaviour
 {
     bool isRide;
-    bool RideBtn;
+    bool ActionBtn;
     [SerializeField]
-    bool RideBtnDwn;
+    bool ActionBtnDwn;
+    float ActionBtnPressTime;
 
     bool isSprint;
     bool SprintBtn;
@@ -22,7 +23,7 @@ public class CharacterManager : MonoBehaviour
 
     
     public float MoveSpeed = 5f;
-    float RideBtnPressTime;
+    
     Animator Anim;
     Rigidbody CRigid;
     Vector3 MoveState;
@@ -36,9 +37,9 @@ public class CharacterManager : MonoBehaviour
         Anim = GetComponent<Animator>();
         CRigid = GetComponent<Rigidbody>();
         Col = GetComponent<CapsuleCollider>();
-        RideBtn = false;
+        ActionBtn = false;
         isRide = false;
-        RideBtnPressTime = 0;
+        ActionBtnPressTime = 0;
     }
 
     // Update is called once per frame
@@ -61,8 +62,8 @@ public class CharacterManager : MonoBehaviour
 
         MoveState.Normalize();
 
-        RideBtn = Input.GetKey(KeyCode.F);
-        RideBtnDwn = Input.GetKeyDown(KeyCode.F);
+        ActionBtn = Input.GetKey(KeyCode.F);
+        ActionBtnDwn = Input.GetKeyDown(KeyCode.F);
 
         SprintBtn = Input.GetKey(KeyCode.LeftShift);
 
@@ -91,7 +92,7 @@ public class CharacterManager : MonoBehaviour
             Jump();
         }
 
-        if (MoveState == Vector3.zero)
+        if (MoveState == Vector3.zero && !isJump)
         {
             return;
         }
@@ -182,16 +183,25 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    void ActionBTN()
+    {
+        if(!ActionBtn)
+        {
+            ActionBtnPressTime = 0;
+            
+        }
+    }
+
     void Ride()
     {
-        if(!RideBtn)
+        if(!ActionBtn)
         { 
-            RideBtnPressTime = 0;
+            ActionBtnPressTime = 0;
             return;
         }
         else if(!_SelectBox.RideOn)
         {
-            if(isRide && RideBtnDwn)
+            if(isRide && ActionBtnDwn)
             {
                 Col.isTrigger = false;
                 CRigid.useGravity = true;
@@ -208,9 +218,9 @@ public class CharacterManager : MonoBehaviour
 
         
         
-        RideBtnPressTime += Time.deltaTime;
+        ActionBtnPressTime += Time.deltaTime;
         
-        if(RideBtnPressTime >= 2.2f)
+        if(ActionBtnPressTime >= 2.2f)
         {
             Col.isTrigger = true;
             CRigid.useGravity = false;
@@ -218,17 +228,6 @@ public class CharacterManager : MonoBehaviour
             transform.localPosition = Vector3.zero;
             isRide = true;
         }
-    }
-
-    public void EndJump()
-    {
-        StartCoroutine(EndJumpCor());
-    }
-
-    IEnumerator EndJumpCor()
-    {
-        yield return new WaitForSeconds(0.5f);
-        isJump = false;
     }
 
 
