@@ -22,12 +22,16 @@ public class CharacterManager : MonoBehaviour
     float MoveSpeedWhenJump = 2f;
 
     
+    bool BoxOn;
+    Box OpenBox;
+
     public float MoveSpeed = 5f;
     
     Animator Anim;
     Rigidbody CRigid;
     Vector3 MoveState;
     CapsuleCollider Col;
+    UI_Manager UIS;
 
     [SerializeField]
     SelectBox _SelectBox;
@@ -40,6 +44,8 @@ public class CharacterManager : MonoBehaviour
         ActionBtn = false;
         isRide = false;
         ActionBtnPressTime = 0;
+        UIS = UI_Manager.m_UI_Manager;
+        OpenBox = null;
     }
 
     // Update is called once per frame
@@ -48,7 +54,7 @@ public class CharacterManager : MonoBehaviour
         InputManager();
         if(!isRide)
             Move();
-        Ride();
+        ActionBTN();
         AnimationSet();
         MoveState = Vector3.zero;
     }
@@ -185,21 +191,28 @@ public class CharacterManager : MonoBehaviour
 
     void ActionBTN()
     {
+        if(BoxOn && Vector3.Distance(OpenBox.transform.position,transform.position) > 5)
+        {
+            UIS.Box_2X2.gameObject.SetActive(false);
+            BoxOn = false;
+            OpenBox = null;
+        }
+
         if(!ActionBtn)
         {
             ActionBtnPressTime = 0;
-            
+            return;
         }
+
+
+        Ride();
+        Box_2x2();
+        
     }
 
     void Ride()
     {
-        if(!ActionBtn)
-        { 
-            ActionBtnPressTime = 0;
-            return;
-        }
-        else if(!_SelectBox.RideOn)
+        if(!_SelectBox.RideOn)
         {
             if(isRide && ActionBtnDwn)
             {
@@ -216,19 +229,39 @@ public class CharacterManager : MonoBehaviour
             }
         }
 
-        
-        
-        ActionBtnPressTime += Time.deltaTime;
-        
-        if(ActionBtnPressTime >= 2.2f)
+        else
         {
-            Col.isTrigger = true;
-            CRigid.useGravity = false;
-            transform.parent = _SelectBox.RideTransform;
-            transform.localPosition = Vector3.zero;
-            isRide = true;
+
+            ActionBtnPressTime += Time.deltaTime;
+
+            if (ActionBtnPressTime >= 2.2f)
+            {
+                Col.isTrigger = true;
+                CRigid.useGravity = false;
+                transform.parent = _SelectBox.RideTransform;
+                transform.localPosition = Vector3.zero;
+                isRide = true;
+            }
         }
     }
 
+    void Box_2x2()
+    {
+        if(!ActionBtnDwn) return;
+
+        if(!_SelectBox.BoxOn || BoxOn)
+        {
+            UIS.Box_2X2.gameObject.SetActive(false);
+            BoxOn = false;
+            OpenBox = null;
+            return;
+        }
+        else
+        {
+            BoxOn = true;
+            UIS.Box_2X2.gameObject.SetActive(true);
+            OpenBox = _SelectBox._Box;
+        }
+    }
 
 }
