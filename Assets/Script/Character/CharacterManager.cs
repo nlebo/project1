@@ -17,6 +17,7 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]
     bool isJump;
     bool JumpBtn;
+    bool IsJumped;
     public float JumpForce = 5;
     Vector3 MoveStateWhenJump;
     float MoveSpeedWhenJump = 2f;
@@ -29,6 +30,7 @@ public class CharacterManager : MonoBehaviour
     bool InvenBtnDown;
 
     public float MoveSpeed = 5f;
+    float RMoveSpeed;
     
     Animator Anim;
     Rigidbody CRigid;
@@ -85,7 +87,7 @@ public class CharacterManager : MonoBehaviour
     void Move()
     {
         float MouseX = Input.GetAxis("Mouse X");
-        float RMoveSpeed = MoveSpeed;
+        RMoveSpeed = MoveSpeed;
 
         isSprint = false;
         Anim.SetBool("Move",false);
@@ -94,9 +96,12 @@ public class CharacterManager : MonoBehaviour
         
         if (!isJump && JumpBtn)
         {
-            isJump = true;
-            CRigid.AddForce(Vector3.up * JumpForce,ForceMode.Impulse);
-            MoveStateWhenJump = MoveState;
+            if (Anim.GetCurrentAnimatorStateInfo(3).IsName("Start") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.1f)
+            {
+                isJump = true;
+                CRigid.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+                MoveStateWhenJump = MoveState;
+            }
         }
         else if (isJump)
         {
@@ -125,6 +130,10 @@ public class CharacterManager : MonoBehaviour
         {
             transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
         }
+        else if(IsJumped && MoveStateWhenJump == Vector3.zero)
+        {
+            transform.Translate(MoveState * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump - 2));
+        }
         else
         {
             transform.Translate(MoveStateWhenJump * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump));
@@ -141,7 +150,6 @@ public class CharacterManager : MonoBehaviour
             if (hit[i].transform.gameObject.layer == 9)
             {
                 float Dis = Vector3.Distance(transform.position, hit[i].point);
-                Debug.Log(Dis);
                 if (Anim.GetInteger("JumpState") == 0)
                 {
                     if (Dis < 1)
@@ -153,11 +161,16 @@ public class CharacterManager : MonoBehaviour
                 {
                     if (Dis >= 1)
                     {
+                        IsJumped = true;
                         Anim.SetInteger("JumpState", 0);
                     }
                 }
 
-                if(Anim.GetCurrentAnimatorStateInfo(3).IsName("BasicMotions@JumpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.9f) isJump = false;
+                if (Dis <= 0.2f && IsJumped){
+                    IsJumped = false;
+                    MoveStateWhenJump = Vector3.zero;
+                }
+                if (Anim.GetCurrentAnimatorStateInfo(3).IsName("ions@JumpEnd01umpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.9f ) isJump = false;
             }
         }
     }
