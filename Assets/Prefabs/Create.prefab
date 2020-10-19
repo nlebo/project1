@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1005582378661162887}
   - component: {fileID: 1005582378661162884}
   - component: {fileID: 1005582378661162885}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Create
   m_TagString: CreateBox
   m_Icon: {fileID: 0}

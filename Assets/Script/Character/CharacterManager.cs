@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CharacterManager : MonoBehaviour
 {
+    int GroundLayerMask;
     bool isRide;
     bool ActionBtn;
     [SerializeField]
@@ -17,6 +18,7 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]
     bool isJump;
     bool JumpBtn;
+    [SerializeField]
     bool IsJumped;
     public float JumpForce = 5;
     Vector3 MoveStateWhenJump;
@@ -28,6 +30,8 @@ public class CharacterManager : MonoBehaviour
 
     bool InvenOn;
     bool InvenBtnDown;
+
+    Cart RideCart;
 
     public float MoveSpeed = 5f;
     float RMoveSpeed;
@@ -51,6 +55,7 @@ public class CharacterManager : MonoBehaviour
         ActionBtnPressTime = 0;
         UIS = UI_Manager.m_UI_Manager;
         OpenBox = null;
+        GroundLayerMask = 1 << LayerMask.NameToLayer("Ground");
     }
 
     // Update is called once per frame
@@ -60,6 +65,7 @@ public class CharacterManager : MonoBehaviour
         if(!isRide)
             Move();
         ActionBTN();
+        CheckGround();
         AnimationSet();
         Inven();
         MoveState = Vector3.zero;
@@ -142,36 +148,35 @@ public class CharacterManager : MonoBehaviour
 
     public void Jump()
     {
-        RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,10);
-        Debug.DrawRay(transform.position,-transform.up,Color.green,0.2f);
+        RaycastHit[] hit = Physics.RaycastAll(transform.position, -transform.up, 10, GroundLayerMask);
+        Debug.DrawRay(transform.position, -transform.up, Color.green, 0.2f);
 
-        for(int i=0; i< hit.Length; i++)
+        if (hit.Length >= 1)
         {
-            if (hit[i].transform.gameObject.layer == 9)
+            float Dis = Vector3.Distance(transform.position, hit[0].point);
+            if (Anim.GetInteger("JumpState") == 0)
             {
-                float Dis = Vector3.Distance(transform.position, hit[i].point);
-                if (Anim.GetInteger("JumpState") == 0)
+                if (Dis < 1)
                 {
-                    if (Dis < 1)
-                    {
-                        Anim.SetInteger("JumpState", 1);
-                    }
+                    Anim.SetInteger("JumpState", 1);
                 }
-                else
-                {
-                    if (Dis >= 1)
-                    {
-                        IsJumped = true;
-                        Anim.SetInteger("JumpState", 0);
-                    }
-                }
-
-                if (Dis <= 0.2f && IsJumped){
-                    IsJumped = false;
-                    MoveStateWhenJump = Vector3.zero;
-                }
-                if (Anim.GetCurrentAnimatorStateInfo(3).IsName("ions@JumpEnd01umpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.9f ) isJump = false;
             }
+            else
+            {
+                if (Dis >= 1)
+                {
+                    IsJumped = true;
+                    Anim.SetInteger("JumpState", 0);
+
+                }
+            }
+
+            if (Dis <= 0.2f && IsJumped)
+            {
+                IsJumped = false;
+                MoveStateWhenJump = Vector3.zero;
+            }
+            if (Anim.GetCurrentAnimatorStateInfo(3).IsName("ions@JumpEnd01umpEnd01") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.9f) isJump = false;
         }
     }
 
@@ -226,6 +231,7 @@ public class CharacterManager : MonoBehaviour
 
         Ride();
         Box_2x2();
+        OnCart();
         
     }
 
@@ -289,6 +295,26 @@ public class CharacterManager : MonoBehaviour
         {
             UIS.UserInven.gameObject.SetActive(!InvenOn);
             InvenOn = !InvenOn;
+        }
+    }
+
+    void OnCart()
+    {
+        if(ActionBtnDwn && _SelectBox.MotorOn) _SelectBox._Cart.PushEngine();
+    }
+
+    void CheckGround()
+    {
+        RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
+        Debug.DrawRay(transform.position,-transform.up,Color.green,0.2f);
+
+        if (hit.Length >= 1 && Vector3.Distance(transform.position,hit[0].point) <= 0.3f)
+        {
+            transform.parent = hit[0].transform;
+        }
+        else if(hit.Length == 0)
+        {
+            transform.parent = null;
         }
     }
 }

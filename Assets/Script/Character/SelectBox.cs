@@ -8,8 +8,10 @@ public class SelectBox : MonoBehaviour
     CharacterManager CM;
     public bool RideOn;
     public bool BoxOn;
+    public bool MotorOn;
     public Transform RideTransform;
     public Box _Box;
+    public Cart _Cart;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +37,12 @@ public class SelectBox : MonoBehaviour
             _Box = other.GetComponent<Box>();
             _Box.GetComponent<MeshRenderer>().material.color = Color.red;
         }
+        else if(other.tag == "Motor")
+        {
+            MotorOn = true;
+            _Cart = other.transform.parent.GetComponent<Cart>();
+            other.GetComponent<MeshRenderer>().material.color = Color.red;
+        }
     }
 
     private void OnTriggerExit(Collider other) {
@@ -49,6 +57,12 @@ public class SelectBox : MonoBehaviour
             BoxOn = false;
             _Box.GetComponent<MeshRenderer>().material.color = Color.white;
             _Box = null;
+        }
+        else if(other.tag == "Motor" && _Cart.transform == other.transform.parent)
+        {
+            MotorOn = false;
+            _Cart = null;
+            other.GetComponent<MeshRenderer>().material.color = Color.white;
         }
     }
 }
