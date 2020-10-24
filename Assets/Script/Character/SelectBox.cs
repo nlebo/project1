@@ -12,6 +12,9 @@ public class SelectBox : MonoBehaviour
     public Transform RideTransform;
     public Box _Box;
     public Cart _Cart;
+
+
+    public bool HandleOn;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +46,12 @@ public class SelectBox : MonoBehaviour
             _Cart = other.transform.parent.GetComponent<Cart>();
             other.GetComponent<MeshRenderer>().material.color = Color.red;
         }
+        else if(other.tag == "Handle")
+        {
+            HandleOn = true;
+            _Cart = other.transform.parent.GetComponent<Cart>();
+            other.GetComponent<MeshRenderer>().material.color = Color.red;
+        }
     }
 
     private void OnTriggerExit(Collider other) {
@@ -64,5 +73,11 @@ public class SelectBox : MonoBehaviour
             _Cart = null;
             other.GetComponent<MeshRenderer>().material.color = Color.white;
         }
+        else if(other.tag == " Handle" && _Cart.transform == other.transform.parent)
+        {
+            HandleOn = false;
+            _Cart = null;
+            other.GetComponent<MeshRenderer>().material.color = Color.white;
+        } 
     }
 }

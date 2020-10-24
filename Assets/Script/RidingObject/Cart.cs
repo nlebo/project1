@@ -11,6 +11,10 @@ public class Cart : MonoBehaviour
     public float MoveSpeed;
     public float MaxMoveSpeed;
     public float AddSpeedPerSecond;
+
+    public float MaxDegree;
+    public float NowDegree;
+    public float AddDegreePerSecond;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +29,7 @@ public class Cart : MonoBehaviour
             MoveSpeed += AddSpeedPerSecond * Time.deltaTime;
             if(MoveSpeed > MaxMoveSpeed) MoveSpeed = MaxMoveSpeed;
             transform.Translate(Vector3.left * Time.deltaTime * MoveSpeed);
+            transform.Rotate(0,NowDegree,0);
         }
     }
 
@@ -35,4 +40,18 @@ public class Cart : MonoBehaviour
         if(!EngineOn) MoveSpeed = 0;
         return EngineOn;
     }
+
+    public void Handling(float degree)
+    {
+        if(degree > 0)
+            NowDegree += AddDegreePerSecond * Time.deltaTime;
+        else if(degree < 0)
+            NowDegree -= AddDegreePerSecond * Time.deltaTime;
+
+        if(NowDegree >= MaxDegree) NowDegree = MaxDegree;
+        else if(NowDegree <= -MaxDegree) NowDegree = -MaxDegree;
+        
+
+    }
+
 }

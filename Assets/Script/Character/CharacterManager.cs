@@ -33,6 +33,9 @@ public class CharacterManager : MonoBehaviour
 
     Cart RideCart;
 
+    bool GrabHandle;
+
+
     public float MoveSpeed = 5f;
     float RMoveSpeed;
     
@@ -97,6 +100,14 @@ public class CharacterManager : MonoBehaviour
 
         isSprint = false;
         Anim.SetBool("Move",false);
+
+        if(GrabHandle)
+        {
+            if(MoveState.x > 0) RideCart.Handling(-1);
+            else if(MoveState.x < 0) RideCart.Handling(1);
+            MoveState = Vector3.zero;
+            return;
+        }
 
         if (!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
         
@@ -232,6 +243,7 @@ public class CharacterManager : MonoBehaviour
         Ride();
         Box_2x2();
         OnCart();
+        Handle();
         
     }
 
@@ -303,6 +315,14 @@ public class CharacterManager : MonoBehaviour
         if(ActionBtnDwn && _SelectBox.MotorOn) _SelectBox._Cart.PushEngine();
     }
 
+    void Handle()
+    {
+        if(!ActionBtnDwn || !_SelectBox.HandleOn) return;
+        
+        GrabHandle = !GrabHandle;
+        if(GrabHandle) RideCart = _SelectBox._Cart;
+        else RideCart = null;
+    }
     void CheckGround()
     {
         RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
