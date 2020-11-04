@@ -7,7 +7,7 @@ public class Cart : MonoBehaviour
     bool EngineOn;
     
 
-
+    public Transform LeftSide,RightSide;
     public float MoveSpeed;
     public float MaxMoveSpeed;
     public float AddSpeedPerSecond;
@@ -18,6 +18,8 @@ public class Cart : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        LeftSide = transform.Find("LeftSide");
+        RightSide = transform.Find("RightSide");
         MoveSpeed = 0;
     }
 

@@ -10,6 +10,7 @@ public class SelectBox : MonoBehaviour
     public bool BoxOn;
     public bool MotorOn;
     public Transform RideTransform;
+    public Transform Hit_Transform;
     public Box _Box;
     public Cart _Cart;
 
@@ -33,28 +34,33 @@ public class SelectBox : MonoBehaviour
             RideOn = true;
             RideTransform = other.transform;
             RideTransform.GetComponent<MeshRenderer>().material.color = Color.red;
+            Hit_Transform = other.transform;
         }
         else if(other.tag == "CreateBox")
         {
             BoxOn = true;
             _Box = other.GetComponent<Box>();
             _Box.GetComponent<MeshRenderer>().material.color = Color.red;
+            Hit_Transform = other.transform;
         }
         else if(other.tag == "Motor")
         {
             MotorOn = true;
             _Cart = other.transform.parent.GetComponent<Cart>();
             other.GetComponent<MeshRenderer>().material.color = Color.red;
+            Hit_Transform = other.transform;
         }
         else if(other.tag == "Handle")
         {
             HandleOn = true;
             _Cart = other.transform.parent.GetComponent<Cart>();
             other.GetComponent<MeshRenderer>().material.color = Color.red;
+            Hit_Transform = other.transform;
         }
     }
 
     private void OnTriggerExit(Collider other) {
+        Hit_Transform = null;
         if(other.tag == "Ride" && RideTransform == other.transform)
         {
             RideOn = false;
@@ -73,7 +79,7 @@ public class SelectBox : MonoBehaviour
             _Cart = null;
             other.GetComponent<MeshRenderer>().material.color = Color.white;
         }
-        else if(other.tag == " Handle" && _Cart.transform == other.transform.parent)
+        else if(other.tag == "Handle" && _Cart.transform == other.transform.parent)
         {
             HandleOn = false;
             _Cart = null;

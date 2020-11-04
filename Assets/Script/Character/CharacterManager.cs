@@ -91,6 +91,7 @@ public class CharacterManager : MonoBehaviour
         JumpBtn = !isJump && Input.GetKey(KeyCode.Space);
 
         InvenBtnDown = Input.GetKeyDown(KeyCode.I);
+        CameraMove.CanSwing = Input.GetKey(KeyCode.LeftAlt);
     }
 
     void Move()
@@ -106,10 +107,11 @@ public class CharacterManager : MonoBehaviour
             if(MoveState.x > 0) RideCart.Handling(-1);
             else if(MoveState.x < 0) RideCart.Handling(1);
             MoveState = Vector3.zero;
+            CameraMove.CanSwing = true;
             return;
         }
 
-        if (!Input.GetKey(KeyCode.LeftAlt)) transform.Rotate(Vector3.up * MouseX);
+        if (!CameraMove.CanSwing) transform.Rotate(Vector3.up * MouseX);
         
         if (!isJump && JumpBtn)
         {
@@ -317,10 +319,15 @@ public class CharacterManager : MonoBehaviour
 
     void Handle()
     {
-        if(!ActionBtnDwn || !_SelectBox.HandleOn) return;
+        if(!ActionBtnDwn || (!_SelectBox.HandleOn && !GrabHandle)) return;
         
         GrabHandle = !GrabHandle;
-        if(GrabHandle) RideCart = _SelectBox._Cart;
+        if(GrabHandle)
+        {
+             RideCart = _SelectBox._Cart;
+             transform.position = Vector3.SqrMagnitude(RideCart.LeftSide.position - transform.position) <= Vector3.SqrMagnitude(RideCart.RightSide.position - transform.position) ? 
+             RideCart.LeftSide.position : RideCart.RightSide.position;
+        }
         else RideCart = null;
     }
     void CheckGround()

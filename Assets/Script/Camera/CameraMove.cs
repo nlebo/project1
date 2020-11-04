@@ -8,6 +8,8 @@ public class CameraMove : MonoBehaviour
     [Range(1,300)]
     public float MouseSensitve = 150f;
     float xRotation,YRotation;
+
+    public static bool CanSwing;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +21,7 @@ public class CameraMove : MonoBehaviour
     {
         float MouseY = Input.GetAxis("Mouse Y") * MouseSensitve * Time.deltaTime;
         float MouseX = 0;
-        if (Input.GetKey(KeyCode.LeftAlt))
+        if (CanSwing)
             MouseX = Input.GetAxis("Mouse X") * MouseSensitve * Time.deltaTime;
         else
             YRotation = 0;
