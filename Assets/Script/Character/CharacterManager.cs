@@ -11,6 +11,11 @@ public class CharacterManager : MonoBehaviour
     bool ActionBtnDwn;
     float ActionBtnPressTime;
 
+    bool b_CanMove;
+    bool b_CanRoateCam;
+
+    bool b_InvenOn;
+
     bool isSprint;
     bool SprintBtn;
     public float SprintSpeed = 2f;
@@ -59,13 +64,17 @@ public class CharacterManager : MonoBehaviour
         UIS = UI_Manager.m_UI_Manager;
         OpenBox = null;
         GroundLayerMask = 1 << LayerMask.NameToLayer("Ground");
+        b_CanMove = true;
+        b_CanRoateCam = true;
+        b_InvenOn = false;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         InputManager();
-        if(!isRide)
+        if(!isRide && !b_InvenOn)
             Move();
         ActionBTN();
         CheckGround();
@@ -90,7 +99,7 @@ public class CharacterManager : MonoBehaviour
 
         JumpBtn = !isJump && Input.GetKey(KeyCode.Space);
 
-        InvenBtnDown = Input.GetKeyDown(KeyCode.I);
+        InvenBtnDown = Input.GetKeyDown(KeyCode.Tab);
         CameraMove.CanSwing = Input.GetKey(KeyCode.LeftAlt);
     }
 
@@ -309,6 +318,20 @@ public class CharacterManager : MonoBehaviour
         {
             UIS.UserInven.gameObject.SetActive(!InvenOn);
             InvenOn = !InvenOn;
+            b_InvenOn = !b_InvenOn;
+
+            Cursor.visible = b_InvenOn;
+
+            if (b_InvenOn)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                CameraMove.b_CanSwingCamera = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                CameraMove.b_CanSwingCamera = true;
+            }
         }
     }
 
