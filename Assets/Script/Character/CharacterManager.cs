@@ -40,7 +40,6 @@ public class CharacterManager : MonoBehaviour
 
     bool GrabHandle;
 
-
     public float MoveSpeed = 5f;
     float RMoveSpeed;
     
@@ -67,7 +66,7 @@ public class CharacterManager : MonoBehaviour
         b_CanMove = true;
         b_CanRoateCam = true;
         b_InvenOn = false;
-        
+
     }
 
     // Update is called once per frame
@@ -113,8 +112,28 @@ public class CharacterManager : MonoBehaviour
 
         if(GrabHandle)
         {
-            if(MoveState.x > 0) RideCart.Handling(-1);
-            else if(MoveState.x < 0) RideCart.Handling(1);
+            if (MoveState.x > 0)
+            {
+                RideCart.Handling(-1);
+                if (RideCart.DegreeAceleation < 1) RideCart.DegreeAceleation += 0.5f * Time.deltaTime;
+                if (RideCart.DegreeAceleation > 1) RideCart.DegreeAceleation = 1;
+
+            }
+            else if (MoveState.x < 0)
+            {
+                RideCart.Handling(1);
+                if (RideCart.DegreeAceleation < 1) RideCart.DegreeAceleation += 0.5f * Time.deltaTime;
+                if (RideCart.DegreeAceleation > 1) RideCart.DegreeAceleation = 1;
+            }
+            else
+            {
+                if(RideCart.DegreeAceleation>0)
+                    RideCart.DegreeAceleation -= 1 * Time.deltaTime;
+                else if(RideCart.DegreeAceleation< 0)
+                    RideCart.DegreeAceleation = 0;
+            }
+            transform.position = Vector3.SqrMagnitude(RideCart.LeftSide.position - transform.position) <= Vector3.SqrMagnitude(RideCart.RightSide.position - transform.position) ? 
+             RideCart.LeftSide.position : RideCart.RightSide.position;
             MoveState = Vector3.zero;
             CameraMove.CanSwing = true;
             return;
@@ -126,8 +145,9 @@ public class CharacterManager : MonoBehaviour
         {
             if (Anim.GetCurrentAnimatorStateInfo(3).IsName("Start") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.1f)
             {
+                CRigid.velocity = Vector3.zero;
                 isJump = true;
-                CRigid.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
+                CRigid.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
                 MoveStateWhenJump = MoveState;
             }
         }
@@ -156,7 +176,11 @@ public class CharacterManager : MonoBehaviour
         
         if(!isJump)
         {
-            transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
+            
+            //transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
+            Quaternion CRot = Quaternion.Euler(0,transform.eulerAngles.y,0);
+            MoveState = CRot * MoveState;
+            CRigid.AddForce(MoveState * RMoveSpeed * 30,ForceMode.Acceleration);
         }
         else if(IsJumped && MoveStateWhenJump == Vector3.zero)
         {
@@ -164,7 +188,10 @@ public class CharacterManager : MonoBehaviour
         }
         else
         {
-            transform.Translate(MoveStateWhenJump * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump));
+            //transform.Translate(MoveStateWhenJump * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump));
+            Quaternion CRot = Quaternion.Euler(0,transform.eulerAngles.y,0);
+            MoveState = CRot * MoveState;
+            CRigid.AddForce(MoveState * RMoveSpeed * 20,ForceMode.Acceleration);
         }
     }
 
@@ -358,13 +385,21 @@ public class CharacterManager : MonoBehaviour
         RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
         Debug.DrawRay(transform.position,-transform.up,Color.green,0.2f);
 
-        if (hit.Length >= 1 && Vector3.Distance(transform.position,hit[0].point) <= 0.3f)
+        if (hit.Length >= 1 && Vector3.Distance(transform.position,hit[hit.Length - 1].point) <= 0.3f)
         {
-            transform.parent = hit[0].transform;
+            transform.parent = hit[hit.Length - 1].transform;
         }
         else if(hit.Length == 0)
         {
             transform.parent = null;
         }
+    }
+
+    void OnDrawGizmos() {
+        // RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
+        // if(hit.Length >= 1){
+        //     Gizmos.DrawSphere(hit[hit.Length - 1].point , 1f);
+        //     Gizmos.color = Color.red;
+        // }
     }
 }

@@ -143,8 +143,12 @@ MonoBehaviour:
   CM: {fileID: 9135471951436923173}
   RideOn: 0
   BoxOn: 0
+  MotorOn: 0
   RideTransform: {fileID: 0}
+  Hit_Transform: {fileID: 0}
   _Box: {fileID: 0}
+  _Cart: {fileID: 0}
+  HandleOn: 0
 --- !u!1 &258944119840194808
 GameObject:
   m_ObjectHideFlags: 0
@@ -1129,6 +1133,8 @@ SkinnedMeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 3
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2006,7 +2012,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 2
   m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &9135471951436923178
@@ -2038,6 +2044,7 @@ MonoBehaviour:
   ActionBtnDwn: 0
   SprintSpeed: 2
   isJump: 0
+  IsJumped: 0
   JumpForce: 5
   MoveSpeed: 5
   _SelectBox: {fileID: 1225481376}
