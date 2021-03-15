@@ -422,9 +422,10 @@ public class CharacterManager : StateInfo
         if(!ActionBtnDwn || !_SelectBox.ItemOn) return;
 
         InvenM.InsertItem(_SelectBox._Item);
+        
+        Destroy(_SelectBox._Item.gameObject);
         _SelectBox._Item = null;
         _SelectBox.ItemOn = false;
-        Destroy(_SelectBox._Item.gameObject);
     }
     
     void Dig()
