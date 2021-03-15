@@ -8,6 +8,8 @@ TagManager:
   - CreateBox
   - Motor
   - Handle
+  - Item
+  - Plane
   layers:
   - Default
   - TransparentFX

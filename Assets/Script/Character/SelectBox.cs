@@ -9,10 +9,14 @@ public class SelectBox : MonoBehaviour
     public bool RideOn;
     public bool BoxOn;
     public bool MotorOn;
+    public bool ItemOn;
+    public bool PlaneOn;
     public Transform RideTransform;
     public Transform Hit_Transform;
     public Box _Box;
     public Cart _Cart;
+    public Item_Manager _Item;
+    
 
 
     public bool HandleOn;
@@ -57,6 +61,16 @@ public class SelectBox : MonoBehaviour
             other.GetComponent<MeshRenderer>().material.color = Color.red;
             Hit_Transform = other.transform;
         }
+        else if(other.tag == "Item")
+        {
+            ItemOn = true;
+            _Item = other.GetComponent<Item_Manager>();
+            other.GetComponent<SpriteRenderer>().color = Color.red;
+        }
+        else if(other.tag == "Plane")
+        {
+            PlaneOn = true;
+        }
     }
 
     private void OnTriggerExit(Collider other) {
@@ -85,5 +99,15 @@ public class SelectBox : MonoBehaviour
             _Cart = null;
             other.GetComponent<MeshRenderer>().material.color = Color.white;
         } 
+        else if(other.tag == "Item")
+        {
+            ItemOn = false;
+            _Item = null;
+            other.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        else if(other.tag == "Plane")
+        {
+            PlaneOn = false;
+        }
     }
 }

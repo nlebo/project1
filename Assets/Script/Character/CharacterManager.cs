@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterManager : MonoBehaviour
+public class CharacterManager : StateInfo
 {
     int GroundLayerMask;
     bool isRide;
@@ -10,6 +10,9 @@ public class CharacterManager : MonoBehaviour
     [SerializeField]
     bool ActionBtnDwn;
     float ActionBtnPressTime;
+
+    bool MouseLeft;
+    float MouseLBtnPressTime;
 
     bool b_CanMove;
     bool b_CanRoateCam;
@@ -51,6 +54,12 @@ public class CharacterManager : MonoBehaviour
 
     [SerializeField]
     SelectBox _SelectBox;
+
+    Inven_Manager InvenM;
+    ItemBoard ItemB;
+
+    [SerializeField]
+    float DigTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -66,13 +75,17 @@ public class CharacterManager : MonoBehaviour
         b_CanMove = true;
         b_CanRoateCam = true;
         b_InvenOn = false;
-
+        InvenM = GetComponent<Inven_Manager>();
+        ItemB = GameObject.Find("ItemBoard").GetComponent<ItemBoard>();
+        SetInven(2,4);
     }
 
     // Update is called once per frame
     void Update()
     {
         InputManager();
+        MouseLBTN();
+        
         if(!isRide && !b_InvenOn)
             Move();
         ActionBTN();
@@ -88,6 +101,8 @@ public class CharacterManager : MonoBehaviour
         if(Input.GetKey(KeyCode.S)) MoveState.z = -1;
         if(Input.GetKey(KeyCode.A)) MoveState.x = -0.5f;
         if(Input.GetKey(KeyCode.D)) MoveState.x = 0.5f;
+
+        MouseLeft = Input.GetMouseButton(0);
 
         MoveState.Normalize();
 
@@ -282,7 +297,28 @@ public class CharacterManager : MonoBehaviour
         Box_2x2();
         OnCart();
         Handle();
+        PickUpItem();
         
+    }
+
+    void MouseLBTN()
+    {
+        if(Input.GetMouseButtonUp(0))
+        {
+            MouseLBtnPressTime = 0;
+            UIS.Dig_Bar.transform.parent.gameObject.SetActive(false);
+        }
+        
+        if(!MouseLeft) return;
+
+        
+
+        if(_SelectBox.PlaneOn && InvenM.IsEquip(1)) Dig();
+        else{
+            UIS.Dig_Bar.transform.parent.gameObject.SetActive(false);
+            MouseLBtnPressTime = 0;
+        }
+
     }
 
     void Ride()
@@ -380,6 +416,42 @@ public class CharacterManager : MonoBehaviour
         }
         else RideCart = null;
     }
+    
+    void PickUpItem()
+    {
+        if(!ActionBtnDwn || !_SelectBox.ItemOn) return;
+
+        InvenM.InsertItem(_SelectBox._Item);
+        Destroy(_SelectBox._Item.gameObject);
+    }
+    
+    void Dig()
+    {
+
+        if(GetStamina() < 0.5f) return;
+
+        if(Input.GetMouseButtonDown(0)){
+            MouseLBtnPressTime = 0;
+            UIS.Dig_Bar.transform.parent.gameObject.SetActive(true);
+        }
+
+        MouseLBtnPressTime += Time.deltaTime;
+
+        UIS.ChangeBarValue("Dig", MouseLBtnPressTime / DigTime);
+
+        if(MouseLBtnPressTime >= DigTime)
+        {
+            MouseLBtnPressTime = 0;
+            int DigPercent = Random.Range(0,101);
+
+            if(DigPercent<=90) InvenM.InsertItem(ItemB.Items[1]);
+
+            if(DigPercent > 80 && DigPercent <= 90) InvenM.InsertItem(ItemB.Items[1]);
+            UseStamina(10f);
+            UIS.ChangeBarValue("Stamina",GetStamina() / 100);
+        }
+    }
+    
     void CheckGround()
     {
         RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
@@ -402,4 +474,10 @@ public class CharacterManager : MonoBehaviour
         //     Gizmos.color = Color.red;
         // }
     }
+
+    void SetInven(int x,int y)
+    {
+        InvenM.Set_Grid(y,x);
+    }
+
 }
