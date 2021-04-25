@@ -29,6 +29,7 @@ public class CharacterManager : StateInfo
     [SerializeField]
     bool IsJumped;
     public float JumpForce = 5;
+    private float JumpNow = 0;
     Vector3 MoveStateWhenJump;
     float MoveSpeedWhenJump = 2f;
 
@@ -47,7 +48,7 @@ public class CharacterManager : StateInfo
     float RMoveSpeed;
     
     Animator Anim;
-    Rigidbody CRigid;
+    CharacterController CController;
     Vector3 MoveState;
     CapsuleCollider Col;
     UI_Manager UIS;
@@ -64,7 +65,7 @@ public class CharacterManager : StateInfo
     void Start()
     {
         Anim = GetComponent<Animator>();
-        CRigid = GetComponent<Rigidbody>();
+        CController = GetComponent<CharacterController>();
         Col = GetComponent<CapsuleCollider>();
         ActionBtn = false;
         isRide = false;
@@ -86,12 +87,20 @@ public class CharacterManager : StateInfo
         InputManager();
         MouseLBTN();
         
-        if(!isRide && !b_InvenOn)
-            Move();
+        
         ActionBTN();
         CheckGround();
-        AnimationSet();
+        
         Inven();
+        
+    }
+
+    private void FixedUpdate() {
+        
+        if(!isRide && !b_InvenOn)
+            Move();
+
+        AnimationSet();
         MoveState = Vector3.zero;
     }
 
@@ -160,15 +169,16 @@ public class CharacterManager : StateInfo
         {
             if (Anim.GetCurrentAnimatorStateInfo(3).IsName("Start") && Anim.GetCurrentAnimatorStateInfo(3).normalizedTime >= 0.1f)
             {
-                CRigid.velocity = Vector3.zero;
                 isJump = true;
-                CRigid.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
+                JumpNow = JumpForce;
                 MoveStateWhenJump = MoveState;
             }
         }
         else if (isJump)
         {
-            
+            JumpNow -= 5 * Time.deltaTime;
+            JumpNow = JumpNow < 0 ? 0 : JumpNow; 
+            CController.Move(Vector3.up * JumpNow * Time.deltaTime);
             Jump();
         }
 
@@ -195,18 +205,18 @@ public class CharacterManager : StateInfo
             //transform.Translate(MoveState * Time.deltaTime * RMoveSpeed);
             Quaternion CRot = Quaternion.Euler(0,transform.eulerAngles.y,0);
             MoveState = CRot * MoveState;
-            CRigid.AddForce(MoveState * RMoveSpeed * 30,ForceMode.Acceleration);
+            CController.Move(MoveState * RMoveSpeed * Time.deltaTime);
         }
         else if(IsJumped && MoveStateWhenJump == Vector3.zero)
         {
-            transform.Translate(MoveState * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump - 2));
+            CController.Move(MoveState * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump - 2));
         }
         else
         {
             //transform.Translate(MoveStateWhenJump * Time.deltaTime * (RMoveSpeed - MoveSpeedWhenJump));
             Quaternion CRot = Quaternion.Euler(0,transform.eulerAngles.y,0);
             MoveState = CRot * MoveState;
-            CRigid.AddForce(MoveState * RMoveSpeed * 20,ForceMode.Acceleration);
+            CController.Move(MoveState * RMoveSpeed * Time.deltaTime);
         }
     }
 
@@ -217,7 +227,14 @@ public class CharacterManager : StateInfo
 
         if (hit.Length >= 1)
         {
-            float Dis = Vector3.Distance(transform.position, hit[0].point);
+            float Dis = 0;
+
+            for(int i = 0, loop = hit.Length; i <loop ; i++)
+            {
+                if(i == 0 || Dis > Vector3.Distance(transform.position,hit[i].point))
+                    Dis = Vector3.Distance(transform.position,hit[i].point);
+            }
+
             if (Anim.GetInteger("JumpState") == 0)
             {
                 if (Dis < 1)
@@ -328,7 +345,6 @@ public class CharacterManager : StateInfo
             if(isRide && ActionBtnDwn)
             {
                 Col.isTrigger = false;
-                CRigid.useGravity = true;
                 isRide= false;
                 transform.parent = null;
                 transform.localPosition = new Vector3(transform.localPosition.x,0,transform.localPosition.z);
@@ -348,7 +364,6 @@ public class CharacterManager : StateInfo
             if (ActionBtnPressTime >= 2.2f)
             {
                 Col.isTrigger = true;
-                CRigid.useGravity = false;
                 transform.parent = _SelectBox.RideTransform;
                 transform.localPosition = Vector3.zero;
                 isRide = true;
@@ -460,14 +475,14 @@ public class CharacterManager : StateInfo
         RaycastHit[] hit = Physics.RaycastAll(transform.position,-transform.up,1,GroundLayerMask);
         Debug.DrawRay(transform.position,-transform.up,Color.green,0.2f);
 
-        if (hit.Length >= 1 && Vector3.Distance(transform.position,hit[hit.Length - 1].point) <= 0.3f)
+        transform.parent = null;
+
+        for(int i =0 , loop = hit.Length;i<loop;i++)
         {
-            transform.parent = hit[hit.Length - 1].transform;
+            if(transform.parent == null || Vector3.Distance(transform.position,hit[i].point) <= Vector3.Distance(transform.position, transform.parent.position))
+                transform.parent = hit[i].transform;
         }
-        else if(hit.Length == 0)
-        {
-            transform.parent = null;
-        }
+
     }
 
     void OnDrawGizmos() {
