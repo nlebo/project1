@@ -14,7 +14,6 @@ public class CharacterMove : IEMove
 	Transform TF_Foots;
 	Animator Anim;
 	bool IsJump = false;
-	bool JumpHigh = false;
 	bool IsJumping = false;
 
 	private void Start()
