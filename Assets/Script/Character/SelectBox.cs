@@ -32,6 +32,11 @@ public class SelectBox : MonoBehaviour
         
     }
 
+    public void ResetAll()
+    {
+
+    }
+
     private void OnTriggerEnter(Collider other) {
         if(other.tag == "Ride")
         {
@@ -49,7 +54,7 @@ public class SelectBox : MonoBehaviour
         }
         else if(other.tag == "Motor")
         {
-            MotorOn = true;
+             MotorOn = true;
             _Cart = other.transform.parent.GetComponent<Cart>();
             other.GetComponent<MeshRenderer>().material.color = Color.red;
             Hit_Transform = other.transform;

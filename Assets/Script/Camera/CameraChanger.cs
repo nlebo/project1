@@ -9,13 +9,13 @@ public class CameraChanger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        EventManager.Instance.AddUpdateManager(UpdateManager);
     }
 
     // Update is called once per frame
-    void Update()
+    void UpdateManager()
     {
-        if(Input.GetKeyDown(KeyCode.T))
+        if(InputManager.GetKeyDown(KeyCode.T))
         {
             First.SetActive(!First.activeInHierarchy);
             Third.SetActive(!Third.activeInHierarchy);

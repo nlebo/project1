@@ -17,10 +17,12 @@ public class CameraMove : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         b_CanSwingCamera = true;
         CanSwing = false;
+
+        EventManager.Instance.AddUpdateManager(UpdateManager);
     }
 
     // Update is called once per frame
-    void Update()
+    void UpdateManager()
     {
         if(!b_CanSwingCamera) return;
         
