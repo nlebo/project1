@@ -41,17 +41,23 @@ public class CharacterMove : IEMove
 		CheckGround();
 		if (IsJump) IsJump = false;
 
-		MoveObject.AddForce(Dic * speed, ForceMode.Impulse);
-		
+		float Rotate = MouseX * speed * 0.5f;
+
+		Vector3 Direction = (MoveObject.transform.forward * Dic.z) + (MoveObject.transform.right * Dic.x) + (Vector3.up * Dic.y);
+
+		MoveObject.AddForce(Direction * speed, ForceMode.Impulse);
+		MoveObject.rotation = MoveObject.rotation * Quaternion.Euler(0, Rotate, 0);
 
 	}
 
 	public override void Move()
 	{
+		MouseX = Input.GetAxis("Mouse X");
 		if (IsJump)
 			return;
 
 		Dic = GetDirection().normalized;
+		
 	}
 
 	public override void Jump()
@@ -59,9 +65,7 @@ public class CharacterMove : IEMove
 		if (IsJump || !InputManager.GetKeyDown(KeyCode.Space) || IsJumping)
 			return;
 
-		Dic = GetDirection().normalized;
-		Dic += Vector3.up;
-		Dic.Normalize();
+		Dic = Vector3.up;
 
 		IsJump = true;
 		IsJumping = true;
@@ -90,7 +94,7 @@ public class CharacterMove : IEMove
 
 		foreach (var value in hit)
 		{
-			if (value.transform.tag == "Plane")
+			if (value.transform.tag != "Player")
 			{
 				if (Vector3.SqrMagnitude(TF_Foots.position - value.point) <= 0.01f)
 				{
@@ -118,7 +122,7 @@ public class CharacterMove : IEMove
 		if (IsJumping)
 			return false;
 
-		return Dic.x != 0 || Dic.z != 0;
+		return Dic.z != 0;
 	}
 
 	public override void SetAnim()

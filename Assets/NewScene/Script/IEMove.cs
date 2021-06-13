@@ -5,6 +5,7 @@ using UnityEngine;
 public class IEMove : MonoBehaviour
 {
     protected float speed;
+    protected float MouseX;
     protected Vector3 Dic;
 
     public virtual void Move() { }

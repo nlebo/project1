@@ -16,7 +16,10 @@ public class SelectBox : MonoBehaviour
     public Box _Box;
     public Cart _Cart;
     public Item_Manager _Item;
-    
+
+    public Clickable SelectedItem;
+
+
 
 
     public bool HandleOn;
@@ -38,81 +41,20 @@ public class SelectBox : MonoBehaviour
     }
 
     private void OnTriggerEnter(Collider other) {
-        if(other.tag == "Ride")
-        {
-            RideOn = true;
-            RideTransform = other.transform;
-            RideTransform.GetComponent<MeshRenderer>().material.color = Color.red;
-            Hit_Transform = other.transform;
-        }
-        else if(other.tag == "CreateBox")
-        {
-            BoxOn = true;
-            _Box = other.GetComponent<Box>();
-            _Box.GetComponent<MeshRenderer>().material.color = Color.red;
-            Hit_Transform = other.transform;
-        }
-        else if(other.tag == "Motor")
-        {
-             MotorOn = true;
-            _Cart = other.transform.parent.GetComponent<Cart>();
-            other.GetComponent<MeshRenderer>().material.color = Color.red;
-            Hit_Transform = other.transform;
-        }
-        else if(other.tag == "Handle")
-        {
-            HandleOn = true;
-            _Cart = other.transform.parent.GetComponent<Cart>();
-            other.GetComponent<MeshRenderer>().material.color = Color.red;
-            Hit_Transform = other.transform;
-        }
-        else if(other.tag == "Item")
-        {
-            ItemOn = true;
-            _Item = other.GetComponent<Item_Manager>();
-            other.GetComponent<SpriteRenderer>().color = Color.red;
-        }
-        else if(other.tag == "Plane")
-        {
-            PlaneOn = true;
-        }
+        SelectedItem = other.GetComponent<Clickable>();
+
+        if (SelectedItem == null)
+            return;
+
+        SelectedItem.OnMouseOn();
     }
 
     private void OnTriggerExit(Collider other) {
-        Hit_Transform = null;
-        if(other.tag == "Ride" && RideTransform == other.transform)
-        {
-            RideOn = false;
-            RideTransform.GetComponent<MeshRenderer>().material.color = Color.white;
-            RideTransform = null;
-        }
-        else if(other.tag == "CreateBox" && _Box.transform == other.transform)
-        {
-            BoxOn = false;
-            _Box.GetComponent<MeshRenderer>().material.color = Color.white;
-            _Box = null;
-        }
-        else if(other.tag == "Motor" && _Cart.transform == other.transform.parent)
-        {
-            MotorOn = false;
-            _Cart = null;
-            other.GetComponent<MeshRenderer>().material.color = Color.white;
-        }
-        else if(other.tag == "Handle" && _Cart.transform == other.transform.parent)
-        {
-            HandleOn = false;
-            _Cart = null;
-            other.GetComponent<MeshRenderer>().material.color = Color.white;
-        } 
-        else if(other.tag == "Item")
-        {
-            ItemOn = false;
-            _Item = null;
-            other.GetComponent<SpriteRenderer>().color = Color.white;
-        }
-        else if(other.tag == "Plane")
-        {
-            PlaneOn = false;
-        }
+        SelectedItem = other.GetComponent<Clickable>();
+
+        if (SelectedItem == null)
+            return;
+
+        SelectedItem.OnMouseExit();
     }
 }

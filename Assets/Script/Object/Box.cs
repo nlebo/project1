@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Box : MonoBehaviour
+public class Box : Clickable
 {
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	bool IsBoxOn = false;
+	public override void OnClick()
+	{
+		if (IsBoxOn)
+		{
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+		}
+		else
+		{
+
+		}
+	}
 }
