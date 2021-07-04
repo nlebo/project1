@@ -93,7 +93,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1618943416642860191
 Transform:
   m_ObjectHideFlags: 0
@@ -115,7 +115,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618943416642860188}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -136,7 +136,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -227,6 +227,7 @@ MonoBehaviour:
   _Box: {fileID: 0}
   _Cart: {fileID: 0}
   _Item: {fileID: 0}
+  SelectedItem: {fileID: 0}
   HandleOn: 0
 --- !u!1 &7543550417724315435
 GameObject:
@@ -792,7 +793,7 @@ GameObject:
   - component: {fileID: 938471007771062698}
   m_Layer: 0
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -892,8 +893,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 971cb7502861ebf4f8aa4b9636a05fc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  First: {fileID: 7543550417724315435}
-  Third: {fileID: 1618943416642860188}
+  First: {fileID: 7543550417724315433}
+  Third: {fileID: 1618943416642860177}
 --- !u!114 &938471007771062698
 MonoBehaviour:
   m_ObjectHideFlags: 0
