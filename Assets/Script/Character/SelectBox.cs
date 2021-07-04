@@ -27,12 +27,17 @@ public class SelectBox : MonoBehaviour
     void Start()
     {
         RideOn = false;
+        EventManager.Instance.AddUpdateManager(UpdateManager);
     }
 
     // Update is called once per frame
-    void Update()
+
+    void UpdateManager()
     {
-        
+        if (SelectedItem != null && InputManager.GetKeyDown(KeyCode.F))
+        {
+            SelectedItem.OnClick();
+        }
     }
 
     public void ResetAll()

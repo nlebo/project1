@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraChanger : MonoBehaviour
 {
     [SerializeField]
-    GameObject First,Third;
+    Camera First,Third;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,8 +17,8 @@ public class CameraChanger : MonoBehaviour
     {
         if(InputManager.GetKeyDown(KeyCode.T))
         {
-            First.SetActive(!First.activeInHierarchy);
-            Third.SetActive(!Third.activeInHierarchy);
+            First.enabled = (!First.enabled);
+            Third.enabled = (!Third.enabled);
         }
     }
 }
