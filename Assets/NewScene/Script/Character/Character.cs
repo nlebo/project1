@@ -41,6 +41,12 @@ public class Character : UnitStat
         m_Move.Move();
         m_Move.Jump();
         m_Move.SetAnim();
+
+        if (InputManager.GetKeyDown(KeyCode.I) && InvenManager.Instance.m_Inventory == null)
+        {
+            InvenManager.Instance.OpenInven();
+        }
+
         
     }
 }

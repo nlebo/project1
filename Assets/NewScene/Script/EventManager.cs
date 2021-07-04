@@ -42,4 +42,9 @@ public class EventManager : MonoBehaviour
 		FixedUpdateManager += value;
 	}
 
+	public void DeleteUpdateManager(updatemanager value)
+	{
+	    UpdateManager -= value;
+	}
+
 }
